@@ -40,6 +40,27 @@ const coachSchema = Schema({
   otp: {
     type: String,
   },
+  Description_Strengths: {
+    type: String
+  },
+  Upload_vaccination_certificate: {
+    type: String
+  },
+  upload_certificates: {
+    type: String
+  },
+  add_testimonials: {
+    type: String
+  },
+  add_specialisation: {
+    type: String
+  },
+  training_videos: {
+    type: String
+  },
+  training_pictures: {
+    type: String
+  },
   isVerified: {
     type: Boolean,
     default: false

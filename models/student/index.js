@@ -46,9 +46,6 @@ const studentSchema = Schema({
   profile_pic: {
     type: String
   },
-  uploadDocuments: {
-    type: String
-  },
   otp: {
     type: String,
   },
