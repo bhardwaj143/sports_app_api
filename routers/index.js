@@ -1,6 +1,7 @@
 import Router from 'express';
 import { adminController, groupController, userController } from '../controllers/index.js'
 
+
 const router = Router();
 
 router.use('/users', userController);
