@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import config from "config";
-import { hash, compare } from 'bcrypt';
+import { compare } from 'bcrypt';
 
 const { Schema, model } = mongoose;
 
@@ -18,19 +18,25 @@ const coachSchema = Schema({
   firstName: {
     type: String
   },
+  profile_pic:{
+    type: String
+  },
   lastName: {
     type: String
   },
+  email: {
+    type: String
+  },
   fullName: {
+    type: String
+  },
+  alternative_mobile: {
     type: String
   },
   mobileNumber: {
     type: String,
   },
   achievements: {
-    type: String,
-  },
-  year_of_experience: {
     type: String,
   },
   year_of_experience: {
@@ -46,9 +52,7 @@ const coachSchema = Schema({
   Upload_vaccination_certificate: {
     type: String
   },
-  upload_certificates: {
-    type: String
-  },
+  upload_certificates: [String],
   add_testimonials: {
     type: String
   },
@@ -61,9 +65,21 @@ const coachSchema = Schema({
   training_pictures: {
     type: String
   },
+  spoken_language: {
+    type: String
+  },
   isVerified: {
     type: Boolean,
     default: false
+  },
+  sport_category: {
+    type: String
+  },
+  coach_category: {
+    type: String
+  },
+  password: {
+    type: String
   },
   isDeleted: {
     type: Boolean,

@@ -3,12 +3,10 @@ import Joi from 'joi';
 // Validation Cases
 export const validationSchema = (action) => {
     switch (action) {
-        case 'ADD_USER': {
+        case 'ADD_COACH': {
             return {
                 mobileNumber: Joi.string().required(),
-                status: Joi.string().required(),
-                name: Joi.string().required(),
-                userId: Joi.string().required()
+                password: Joi.string().required()
             };
         }
         case 'LOGIN': {
@@ -16,6 +14,12 @@ export const validationSchema = (action) => {
                 email: Joi.string().email().required(),
                 password: Joi.string().required()
             };
+        }
+        case 'CHANGE_PASSWORD': {
+            return {
+                oldPassword: Joi.string().required(),
+                newPassword: Joi.string().required()
+            }
         }
     }
     return {};

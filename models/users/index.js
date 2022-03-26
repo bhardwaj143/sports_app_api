@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
 import config from "config";
-import { hash, compare } from 'bcrypt';
+import { compare } from 'bcrypt';
 
 const { Schema, model } = mongoose;
 

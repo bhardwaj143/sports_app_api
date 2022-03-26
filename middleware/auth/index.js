@@ -1,12 +1,12 @@
 import jwt from "jsonwebtoken";
 import config from "config";
 import { makeResponse, statusCodes, responseMessages } from "../../helpers/index.js";
-import { findUserDetail } from "../../services/index.js";
+import { findCoachById, findUserDetail } from "../../services/index.js";
 
 const { UNAUTHORIZED } = responseMessages;
 const { FORBIDDEN, AUTH_ERROR } = statusCodes;
 
-export const auth = async (req, res, next) => {
+export const coachAuth = async (req, res, next) => {
     //get the token from the header if present
     const token = req.headers["authorization"] || req.headers["authorization"];
 
@@ -15,7 +15,7 @@ export const auth = async (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, config.get("privateKey"));
-        const userRecord = await findUserDetail({ _id: decoded.id });
+        const userRecord = await findCoachById({ _id: decoded.id });
         if (!userRecord) return makeResponse(res, FORBIDDEN, false, UNAUTHORIZED);
         if (userRecord.isDeleted) return makeResponse(res, FORBIDDEN, false, UNAUTHORIZED);
         if (userRecord) {

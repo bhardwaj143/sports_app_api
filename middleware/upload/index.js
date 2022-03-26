@@ -12,7 +12,8 @@ const multerFilter = (req, file, cb) => {
 const storage = diskStorage({
 	destination: function (req, file, cb) {
 		if(req.files?.profile_pic) cb(null, './uploads/profile_pic');
-		else if (req.files?.groupicon) cb(null, './uploads/group_icons');
+		else if (req.files?.Upload_vaccination_certificate) cb(null, './uploads/Upload_vaccination_certificate');
+		else if (req.files?.upload_certificates) cb(null, './uploads/upload_certificates');
 		else cb(null, './uploads/pictures');
 	},
 	filename: function (req, file, cb) {

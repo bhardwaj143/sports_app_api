@@ -1,6 +1,6 @@
 import Router from 'express';
 import { catchAsyncAction, makeResponse, responseMessages, statusCodes, userMapper } from '../../helpers/index.js';
-import { auth, validators } from '../../middleware/index.js';
+import {  validators } from '../../middleware/index.js';
 import upload from '../../middleware/upload/index.js';
 import { addGroup, findAllGroup } from '../../services/index.js';
 import mongoose from "mongoose";
