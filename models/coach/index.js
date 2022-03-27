@@ -6,12 +6,21 @@ import { compare } from 'bcrypt';
 const { Schema, model } = mongoose;
 
 const addressSchema = mongoose.Schema({
+  kilometer_range: String,
   formattedAddress: String,
+  completeAddress: String,
+  floor: String,
+  landmark: String,
   geo: {
     index: '2dsphere',
     type: [Number],
     default: [0, 0]
   }
+}, { _id: false });
+
+const statusSchema = mongoose.Schema({
+  coachStatus: String,
+  message: String
 }, { _id: false });
 
 const coachSchema = Schema({
@@ -43,6 +52,7 @@ const coachSchema = Schema({
     type: String,
   },
   coachLocation: [addressSchema],
+  status: [statusSchema],
   otp: {
     type: String,
   },
@@ -66,17 +76,20 @@ const coachSchema = Schema({
     type: String
   },
   spoken_language: {
-    type: String
+    type: String,
+    enum: ['ENGLISH', 'HINDI', 'TELUGU']
   },
   isVerified: {
     type: Boolean,
     default: false
   },
   sport_category: {
-    type: String
+    type: String,
+    enum: ['FOOT_BALL', 'CRICKET', 'VOLLEY_BALL','FOOT_BALL', 'BASKET_BALL', 'RUGBY','BADMINTON', 'TENNIS', 'BOXING','CHESS', 'TABLE_TENNIS', 'ARCHERYH','ATHLETICS', 'BODY_BUILDING', 'SWIMMING','HOCKEY']
   },
   coach_category: {
-    type: String
+    type: String,
+    enum: ['CERTIFIED_COACH', 'INTERNATIONAL_PLAYER', 'NATIONAL_UNIVERSITY_PLAYER', 'STATE_PLAYER']
   },
   password: {
     type: String

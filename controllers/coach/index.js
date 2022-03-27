@@ -42,6 +42,8 @@ router.patch('/', upload.fields([{
 }]), coachAuth, catchAsyncAction(async (req, res) => {
   let certificates = [];
   let existing_certificates = [];
+  //concatenate first name and last name for internal use
+  let name = req.body.firstName.concat(req.body.lastName);
   if (req.body?.existing_certificates?.length > 0) existing_certificates = req.body.existing_certificates;
   if (req.files?.upload_certificates?.length > 0) {
     await Promise.all(
@@ -57,12 +59,26 @@ router.patch('/', upload.fields([{
   if (req.body?.formattedAddress && req.body?.geo) {
     let coachLocation = [
       {
+        kilometer_range: req.body.kilometer_range,
+        completeAddress: req.body.completeAddress,
+        floor: req.body.floor,
+        landmark: req.body.landmark,
         formattedAddress: req.body.formattedAddress,
         geo: req.body.geo?.split(',')
       }
     ];
     req.body.coachLocation = coachLocation;
   };
+  if (req.body?.coachStatus) {
+    let status = [
+      {
+        coachStatus: req.body.coachStatus,
+        message: req.body.message
+      }
+    ];
+    req.body.status = status;
+  };
+  if (name) req.body.fullName = name;
   if (req.body.password) req.body.password = await hashPassword(req.body.password);
   let updateCoachProfile = await updateCoach(req.body, { _id: req.userData.id });
   //Delete fields temporary from response
