@@ -1,3 +1,9 @@
+import bcrypt from 'bcrypt';
+import jsonwebtoken from 'jsonwebtoken';
+
+const { sign, verify } = jsonwebtoken;
+const { hash, compare } = bcrypt;
+
 export const hashPassword = async (rawPassword) => new Promise((resolve, reject) => {
 	hash(rawPassword, 10)
 		.then(resolve)
