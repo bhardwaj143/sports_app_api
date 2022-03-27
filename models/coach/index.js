@@ -15,17 +15,28 @@ const addressSchema = mongoose.Schema({
 }, { _id: false });
 
 const coachSchema = Schema({
+  profile_pic : {
+    type: String, 
+     required: false
+  },
   firstName: {
-    type: String
+    type: String,
+    required: true
   },
   lastName: {
-    type: String
+    type: String,
+    required: true
   },
   fullName: {
     type: String
   },
   mobileNumber: {
     type: String,
+    required: true
+  },
+  email: {
+    type: String,
+    required: true
   },
   achievements: {
     type: String,
