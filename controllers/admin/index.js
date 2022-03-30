@@ -1,6 +1,6 @@
 import Router from 'express';
 import { privateKey } from '../../config/privateKeys.js'
-import { catchAsyncAction, makeResponse, responseMessages, statusCodes } from '../../helpers/index.js';
+import { catchAsyncAction, makeResponse, responseMessages, statusCodes, userMapper } from '../../helpers/index.js';
 import {
     hashPassword,
     findByEmail,
@@ -9,13 +9,19 @@ import {
     sendEmail,
     generateOtp,
     findAdmin,
-    addAdmin
+    addAdmin,
+    findAllCoachUsers,
+    findCoachByIdAdmin,
+    findDeleteCoachAdmin,
+    updateCoach
 } from '../../services/index.js';
-import { validators } from '../../middleware/index.js';
+import upload from '../../middleware/upload/index.js';
+import { coachAuth, validators } from '../../middleware/index.js';
 import  adminAuth  from '../../middleware/auth/admin.js';
+import { Coach } from '../../models/index.js';
 
 //Response messages
-const { LOGIN, OTP_MISMATCH, INVALID_PASSWORD, INVALID, PASSWORD_CHANGED, ADMIN_ADDED, USER_NOTFOUND, RESET_PASSWORD, OTP_FOR_PASSWORD, VERIFY_OTP, EMAIL_NOT_REGISTER, ALREADY_EXIST } = responseMessages;
+const { LOGIN, OTP_MISMATCH,NO_DATA_FOUND,UPDATE_COACH, DELETE_COACH_SUCCESSFULL, FETCH_OWN_PROFILE, INVALID_PASSWORD, INVALID,FETCH_ALL_COACH, PASSWORD_CHANGED, ADMIN_ADDED, USER_NOTFOUND, RESET_PASSWORD, OTP_FOR_PASSWORD, VERIFY_OTP, EMAIL_NOT_REGISTER, ALREADY_EXIST } = responseMessages;
 //Response Status code
 const { SUCCESS, NOT_FOUND, BAD_REQUEST, RECORD_ALREADY_EXISTS } = statusCodes;
 
@@ -134,5 +140,37 @@ router.post('/reset-password', validators('RESET_PASSWORD'), async (req, res) =>
             return makeResponse(res, BAD_REQUEST, false, error.message);
         });
 });
+
+//Coach Users List
+router.get('/coachUsersList', async (req, res) => {
+    let talkieContact = await findAllCoachUsers();
+    return makeResponse(res, SUCCESS, true, FETCH_ALL_COACH, talkieContact);
+});
+
+router.get('/searchCoach', catchAsyncAction(async (req, res) => {
+    let coach = await findCoachByIdAdmin({ _id: req.query.id });
+    if(!coach) return makeResponse(res, SUCCESS, true, NO_DATA_FOUND);
+    let newCoachMapper = await userMapper(coach);
+    return makeResponse(res, SUCCESS, true, FETCH_OWN_PROFILE, newCoachMapper);
+  }));
+
+  router.get('/deleteCoach', catchAsyncAction(async (req, res) => {
+    let coach = await findDeleteCoachAdmin({ _id: req.query.id });
+    return makeResponse(res, SUCCESS, true, DELETE_COACH_SUCCESSFULL);
+  }));
+ 
+
+  //update Coach fields
+router.patch('/updateCoachStatus', catchAsyncAction(async (req, res) => {
+    const { isVerified } = req.body
+    Coach.findByIdAndUpdate({_id: req.query.id }, {'$set': {
+        'status.$.coachStatus': isVerified,
+        'status.$.message': 'Fake Documents'
+    }}, function(err) {
+        console.log(err)
+    })
+//   return makeResponse(res, SUCCESS, true, UPDATE_COACH);
+}));
+
 
 export const adminController = router;

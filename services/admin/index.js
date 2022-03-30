@@ -1,4 +1,4 @@
-import { Admin } from '../../models/index.js';
+import { Admin, Coach, User } from '../../models/index.js';
 
 //Add admin
 export const addAdmin = async (payload = {}) => {
@@ -25,3 +25,14 @@ export const updateAdmin = (email, data) => new Promise((resolve, reject) => {
     .then(resolve)
     .catch(reject);
 });
+
+//Find coach user list
+export const findAllCoachUsers = async (condition = {}) => await Coach.find(condition).exec();
+
+
+//Find CoachBy Id
+export const findCoachByIdAdmin = async (condition = {}) => await Coach.findOne(condition).exec();
+
+
+//Find CoachBy Id
+export const findDeleteCoachAdmin = async (condition = {}) => await Coach.deleteOne(condition).exec();

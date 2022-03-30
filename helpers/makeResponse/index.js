@@ -20,13 +20,15 @@ export const responseMessages = {
     'INVALID': 'Invalid password',
     'PASSWORD_CHANGED': 'Password Changed Successfully',
     'FETCH_OWN_PROFILE': 'Fetch Own Profile Successfully',
+    'DELETE_COACH_SUCCESSFULL' : 'Delete Coach Successfully',
     'ADMIN_ADDED': 'Admin added successfully',
     'USER_NOTFOUND': 'User not found',
     'RESET_PASSWORD': 'Password Reset Successfully',
     'OTP_FOR_PASSWORD': 'OTP For Password Reset Sent To Your Email',
     'VERIFY_OTP': 'OTP Verified',
     'EMAIL_NOT_REGISTER': 'Email not registered',
-    'ALREADY_EXIST': 'Aleardy Exist Please Login'
+    'ALREADY_EXIST': 'Aleardy Exist Please Login',
+    'NO_DATA_FOUND' : 'No Data Found'
 
 }
 
