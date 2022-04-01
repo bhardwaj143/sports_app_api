@@ -163,13 +163,8 @@ router.get('/searchCoach', catchAsyncAction(async (req, res) => {
   //update Coach fields
 router.patch('/updateCoachStatus', catchAsyncAction(async (req, res) => {
     const { isVerified } = req.body
-    Coach.findByIdAndUpdate({_id: req.query.id }, {'$set': {
-        'status.$.coachStatus': isVerified,
-        'status.$.message': 'Fake Documents'
-    }}, function(err) {
-        console.log(err)
-    })
-//   return makeResponse(res, SUCCESS, true, UPDATE_COACH);
+    let updateCoachProfile = await updateCoach(req.body, { _id: req.query.id });
+  return makeResponse(res, SUCCESS, true, UPDATE_COACH, updateCoachProfile);
 }));
 
 
