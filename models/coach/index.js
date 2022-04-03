@@ -94,6 +94,9 @@ const coachSchema = Schema({
   password: {
     type: String
   },
+  otp: {
+    type: Number
+  },
   isDeleted: {
     type: Boolean,
     default: false

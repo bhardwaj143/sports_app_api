@@ -1,3 +1,6 @@
+import { generateOtp } from "../../services/index.js";
+const otp = generateOtp();
+
 export const responseMessages = {
     'ACCOUNT_DISABLED': 'Your account is disabled please contact to admin',
     'ALREADY_REGISTER': 'Mobile-Number already registered',
@@ -26,11 +29,19 @@ export const responseMessages = {
     'OTP_FOR_PASSWORD': 'OTP For Password Reset Sent To Your Email',
     'VERIFY_OTP': 'OTP Verified',
     'EMAIL_NOT_REGISTER': 'Email not registered',
-    'ALREADY_EXIST': 'Aleardy Exist Please Login'
+    'ALREADY_EXIST': 'Aleardy Exist Please Login',
+    'VERIFY_OTP': 'OTP Verified',
+    'OTP_MISMATCH': 'OTP mismatch',
+    'OTP_SENT': 'OTP sent to your mobile number',
 
 }
 
 export const notificationPayload = {}
+
+export const OTP_Message = {
+ 'OTP': otp,
+ 'OTP_MESSAGE' : `Dear User OTP for Login into Your account is ${otp}-SafeWash DryCleaners`
+}
 
 export const statusCodes = {
     'SUCCESS': 200,
