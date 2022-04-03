@@ -17,8 +17,8 @@ const router = Router();
 router.post('/sign-up', validators('ADD_COACH'), catchAsyncAction(async (req, res) => {
   let sent_OTP = OTP_Message.OTP;
   let findcoach = await findCoachDetail({ mobileNumber: req.body.mobileNumber });
-  let otp = await sendOtp(req.body.mobileNumber, OTP_Message.OTP_MESSAGE);
   if (findcoach) return makeResponse(res, RECORD_ALREADY_EXISTS, false, ALREADY_REGISTER);
+  let otp = await sendOtp(req.body.mobileNumber, OTP_Message.OTP_MESSAGE);
   //set incrept password
   let password = await hashPassword(req.body.password);
   let coach = await addCoach({ mobileNumber: req.body.mobileNumber, password, otp: sent_OTP });
