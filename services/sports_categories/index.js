@@ -21,11 +21,14 @@ export const deleteCategories = (id) => new Promise((resolve, reject) => {
 });
 
 //Find All Categories
-export const findAllCategories = (search = {}) => new Promise((resolve, reject) => {
-    Categories.find(search)
-        .then(resolve)
-        .catch(reject)
-});
+export const findAllCategories = async (skip, limit, search = {}) => {
+    return await Categories.find(search)
+      .skip(skip).limit(Number(limit))
+      .sort('-createdAt')
+      .exec()
+  };
 
 //Find Categories Id
 export const findCategoriesById = async (condition = {}) => await Categories.findOne(condition).exec();
+
+export const findAllCategoriesCount = async (search) => await Categories.countDocuments(search).exec();

@@ -38,6 +38,9 @@ export const responseMessages = {
     'FETCH_ALL_CATEGORIES': 'Fetch Categories Succesfully',
     'UPDATE_CATEGORIES': 'Update Categories Succesfully',
     'DELETE_CATEGORIES': 'Delete Categories Succesfully',
+    'NOT_REGISTERED': 'Mobile Number Not Registered',
+    'OTP_FOR_PASSWORD': 'OTP For Password Reset Sent To Your Mobile Number',
+    'RESET_PASSWORD': 'Password Reset Successfully',
 
 }
 

@@ -2,14 +2,14 @@ import Router from 'express';
 import { catchAsyncAction, makeResponse, responseMessages, statusCodes, userMapper, OTP_Message } from '../../helpers/index.js';
 import { coachAuth, validators } from '../../middleware/index.js';
 import upload from '../../middleware/upload/index.js';
-import { hashPassword, addCoach, findCoachDetail, findCoachById, updateCoach, matchPassword, changeCoachPassword, sendOtp } from '../../services/index.js';
+import { hashPassword, addCoach, findCoachDetail, findCoachById, updateCoach, matchPassword, changeCoachPassword, sendOtp, findAllCategories, findAllCategoriesCount } from '../../services/index.js';
 import mongoose from "mongoose";
 
 //Response Status code
 const { SUCCESS, RECORD_ALREADY_EXISTS, NOT_FOUND, BAD_REQUEST } = statusCodes;
 
 //Response Messages
-const { ALREADY_REGISTER, COACH_NOTFOUND, UPDATE_COACH, INVALID, REGISTERD, LOGIN, INVALID_PASSWORD, PASSWORD_CHANGED, FETCH_OWN_PROFILE, VERIFY_OTP, OTP_MISMATCH, OTP_SENT } = responseMessages;
+const { ALREADY_REGISTER, COACH_NOTFOUND, UPDATE_COACH, INVALID, REGISTERD, LOGIN, INVALID_PASSWORD, PASSWORD_CHANGED, FETCH_OWN_PROFILE, VERIFY_OTP, OTP_MISMATCH, OTP_SENT, FETCH_ALL_CATEGORIES, NOT_REGISTERED, OTP_FOR_PASSWORD, RESET_PASSWORD } = responseMessages;
 
 const router = Router();
 
@@ -136,8 +136,9 @@ router.get('/me', coachAuth, catchAsyncAction(async (req, res) => {
 }));
 
 //Verify OTP
-router.post('/verify-otp', coachAuth, catchAsyncAction(async (req, res) => {
-  let coach = await findCoachById({ _id: req.userData.id });
+router.post('/verify-otp', catchAsyncAction(async (req, res) => {
+  let coach = await findCoachById({ mobileNumber: req.body.mobileNumber });
+  if (!coach) return makeResponse(res, NOT_FOUND, false, NOT_REGISTERED);
   //Genrate access token and Refresh token
   let accessToken = coach.generateAuthToken(coach._id);
   const refreshToken = coach.generateRefershToken(coach._id);
@@ -148,14 +149,61 @@ router.post('/verify-otp', coachAuth, catchAsyncAction(async (req, res) => {
 }));
 
 //Resend OTP
-router.post('/resend-otp', coachAuth, catchAsyncAction(async (req, res) => {
+router.post('/resend-otp', catchAsyncAction(async (req, res) => {
   let coach = await findCoachById({ _id: req.userData.id });
   //Sent OTP
   let otp = await sendOtp(coach.mobileNumber, OTP_Message.OTP_MESSAGE);
   let sentOtp = OTP_Message.OTP;
   //Updated OTP into registered profile
-  let updateCoachProfile = await updateCoach({otp:sentOtp}, { _id: req.userData.id });
+  let updateCoachProfile = await updateCoach({ otp: sentOtp }, { _id: req.userData.id });
   return makeResponse(res, SUCCESS, true, OTP_SENT);
 }));
+
+//Forgot password
+router.post('/forgot-password', catchAsyncAction(async (req, res) => {
+  let coach = await findCoachById({ mobileNumber: req.body.mobileNumber });
+  if (!coach) return makeResponse(res, NOT_FOUND, false, NOT_REGISTERED);
+  //Sent OTP
+  let otp = await sendOtp(coach.mobileNumber, OTP_Message.OTP_MESSAGE);
+  let sentOtp = OTP_Message.OTP;
+  //Updated OTP into registered profile
+  let updateCoachProfile = await updateCoach({ otp: sentOtp }, { mobileNumber: req.body.mobileNumber });
+  return makeResponse(res, SUCCESS, true, OTP_FOR_PASSWORD);
+}));
+
+//Reset Password
+router.post('/reset-password', coachAuth, catchAsyncAction(async (req, res) => {
+  const { password } = req.body;
+  let updateCoachProfile = await updateCoach({ password: await hashPassword(password) }, { _id: req.userData.id });
+  return makeResponse(res, SUCCESS, true, RESET_PASSWORD);
+}));
+
+//Categories Listing
+router.get('/categoriesList', catchAsyncAction(async (req, res) => {
+  let searchingCategories = { isDeleted: false };
+  let page = 1,
+    limit = 10,
+    skip = 0;
+  if (req.query.page == 0) req.query.page = '';
+  if (req.query.page) page = req.query.page;
+  if (req.query.limit) limit = req.query.limit;
+  skip = (page - 1) * limit;
+  let regx;
+  let searchFilter = req.query;
+  if (searchFilter?.search) {
+    regx = new RegExp(searchFilter?.search);
+    searchingCategories = {
+      isDeleted: false, $or: [{ 'name': { '$regex': regx, $options: 'i' } }]
+    }
+  };
+  let categories = await findAllCategories(skip, limit, searchingCategories);
+  let categoriesCount = await findAllCategoriesCount(searchingCategories);
+  return makeResponse(res, SUCCESS, true, FETCH_ALL_CATEGORIES, categories, {
+    current_page: Number(page),
+    total_records: categoriesCount,
+    total_pages: Math.ceil(categoriesCount / limit),
+  });
+}));
+
 
 export const coachController = router;

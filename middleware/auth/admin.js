@@ -8,7 +8,7 @@ export default async function authUser(req, res, next) {
   const token = req.headers["x-access-token"] || req.headers["authorization"];
 
   //if no token found, return response (without going to the next middelware)
-  if (!token) return makeResponse(res, statusCodes.AUTH_ERROR, false, responseMessages.EN.UNAUTHORIZED);
+  if (!token) return makeResponse(res, statusCodes.AUTH_ERROR, false, responseMessages.UNAUTHORIZED);
 
   try {
     const decoded = jwt.verify(token, config.get("privateKey"));

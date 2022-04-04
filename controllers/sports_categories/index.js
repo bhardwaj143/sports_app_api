@@ -1,7 +1,7 @@
 import Router from 'express';
 import { catchAsyncAction, makeResponse, responseMessages, statusCodes } from '../../helpers/index.js';
 import {  validators } from '../../middleware/index.js';
-import { addCategories, deleteCategories, findAllCategories, findCategoriesById, updateCategories } from '../../services/index.js';
+import { addCategories, deleteCategories, findAllCategories, findAllCategoriesCount, findCategoriesById, updateCategories } from '../../services/index.js';
 import  adminAuth  from '../../middleware/auth/admin.js';
 
 //Response Status code
@@ -26,13 +26,34 @@ router.get('/:id', adminAuth, catchAsyncAction(async (req, res) => {
 
 //Get all categories
 router.get('/', adminAuth, catchAsyncAction(async (req, res) => {
-    let categories = await findAllCategories({});
-    return makeResponse(res, SUCCESS, true, FETCH_ALL_CATEGORIES, categories);
+     let searchingCategories = {isDeleted: false};
+    let page = 1,
+        limit = 10,
+        skip = 0;
+    if (req.query.page == 0) req.query.page = '';
+    if (req.query.page) page = req.query.page;
+    if (req.query.limit) limit = req.query.limit;
+    skip = (page - 1) * limit;
+    let regx;
+    let searchFilter = req.query;
+    if (searchFilter?.search) {
+        regx = new RegExp(searchFilter?.search);
+        searchingCategories = {
+            isDeleted: false, $or: [{ 'name': { '$regex': regx, $options: 'i' } }]
+        }
+    };
+    let categories = await findAllCategories(skip, limit, searchingCategories);
+    let categoriesCount = await findAllCategoriesCount(searchingCategories);
+    return makeResponse(res, SUCCESS, true, FETCH_ALL_CATEGORIES, categories,{
+        current_page: Number(page),
+        total_records: categoriesCount,
+        total_pages: Math.ceil(categoriesCount / limit),
+    });
 }));
 
 //update categories
-router.get('/', adminAuth, catchAsyncAction(async (req, res) => {
-    let categories = await updateCategories({ _id: req.body.id }, req.body)
+router.patch('/:id', adminAuth, catchAsyncAction(async (req, res) => {
+    let categories = await updateCategories({ _id: req.params.id }, req.body)
     return makeResponse(res, SUCCESS, true, UPDATE_CATEGORIES, categories);
 }));
 
