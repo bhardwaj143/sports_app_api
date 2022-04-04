@@ -33,6 +33,11 @@ export const responseMessages = {
     'VERIFY_OTP': 'OTP Verified',
     'OTP_MISMATCH': 'OTP mismatch',
     'OTP_SENT': 'OTP sent to your mobile number',
+    'ADD_CATEGORIES': 'Categories Added Successfully',
+    'FETCH_CATEGORIES': 'Fetch Categories Succesfully',
+    'FETCH_ALL_CATEGORIES': 'Fetch Categories Succesfully',
+    'UPDATE_CATEGORIES': 'Update Categories Succesfully',
+    'DELETE_CATEGORIES': 'Delete Categories Succesfully',
 
 }
 

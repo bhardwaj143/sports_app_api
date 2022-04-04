@@ -83,10 +83,7 @@ const coachSchema = Schema({
     type: Boolean,
     default: false
   },
-  sport_category: {
-    type: String,
-    enum: ['FOOT_BALL', 'CRICKET', 'VOLLEY_BALL','FOOT_BALL', 'BASKET_BALL', 'RUGBY','BADMINTON', 'TENNIS', 'BOXING','CHESS', 'TABLE_TENNIS', 'ARCHERYH','ATHLETICS', 'BODY_BUILDING', 'SWIMMING','HOCKEY']
-  },
+  sport_category: [{ type: mongoose.Schema.ObjectId, ref: 'Categories' }],
   coach_category: {
     type: String,
     enum: ['CERTIFIED_COACH', 'INTERNATIONAL_PLAYER', 'NATIONAL_UNIVERSITY_PLAYER', 'STATE_PLAYER']
