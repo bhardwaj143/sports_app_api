@@ -87,11 +87,11 @@ router.patch('/', upload.fields([{
 }));
 
 //Login Coach
-router.post('/login', validators('LOGIN'), catchAsyncAction(async (req, res) => {
+router.post('/login', validators('COACH_LOGIN'), catchAsyncAction(async (req, res) => {
   const { mobileNumber, password } = req.body;
-  const coach = await findcoach({ mobileNumber });
+  const coach = await findCoachById({ mobileNumber });
   if (!coach) return makeResponse(res, NOT_FOUND, false, COACH_NOTFOUND);
-  const passwordCorrect = await matchPassword(password, admin.password);
+  const passwordCorrect = await matchPassword(password, coach.password);
   if (!passwordCorrect) return makeResponse(res, BAD_REQUEST, false, INVALID);
   const accessToken = coach.generateAuthToken(coach._id);
   const refreshToken = coach.generateRefershToken(coach._id);

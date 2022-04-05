@@ -7,6 +7,7 @@ let {
     PORT,
     nodemailerEmail,
     nodemailerPassword,
+    SECRET
 } = process.env;
 
 export const privateKey = {
@@ -15,4 +16,5 @@ export const privateKey = {
     'PORT': PORT,
     'EMAIL': nodemailerEmail,
     'PASSWORD': nodemailerPassword,
+    'SECRET': SECRET
 };

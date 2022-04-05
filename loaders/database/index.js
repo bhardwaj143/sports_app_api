@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { privateKey } from '../../config/privateKeys.js'
+import { privateKey } from '../../config/privateKeys.js';
 
 mongoose.connect(privateKey.DB_STRING,
     {

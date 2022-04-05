@@ -27,8 +27,10 @@ export const updateAdmin = (email, data) => new Promise((resolve, reject) => {
 });
 
 //Find coach user list
-export const findAllCoachUsers = async (condition = {}) => await Coach.find(condition).exec();
+export const findAllCoachUsers = async (skip, limit, condition = {}) => await Coach.find(condition).select('-password').skip(skip).limit(Number(limit)).exec();
 
+//coach count
+export const findAllCoachCount = async (condition = {}) => await Coach.countDocuments(condition).exec();
 
 //Find CoachBy Id
 export const findCoachByIdAdmin = async (condition = {}) => await Coach.findOne(condition).exec();
@@ -36,3 +38,11 @@ export const findCoachByIdAdmin = async (condition = {}) => await Coach.findOne(
 
 //Find CoachBy Id
 export const findDeleteCoachAdmin = async (condition = {}) => await Coach.deleteOne(condition).exec();
+
+// Update Coach Status
+//Change status
+export const changeStatus = (_id, data) => new Promise((resolve, reject) => {
+	Coach.updateOne({ _id: _id }, data)
+		.then(resolve)
+		.catch(reject);
+});

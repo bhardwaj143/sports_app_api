@@ -28,8 +28,11 @@ export const responseMessages = {
     'VERIFY_OTP': 'OTP Verified',
     'EMAIL_NOT_REGISTER': 'Email not registered',
     'ALREADY_EXIST': 'Aleardy Exist Please Login',
-    'NO_DATA_FOUND' : 'No Data Found'
-
+    'NO_DATA_FOUND' : 'No Data Found',
+    'AVAILABILITY_ADDED': 'Availability added successful',
+    'FETCH': 'Fetched Successfully',
+    'UPDATE_SUCCESS': 'Updated Successfully',
+    'ADD_SPORTS': 'Sports Category added successful'
 }
 
 export const notificationPayload = {}
