@@ -2,6 +2,7 @@ import jwt from "jsonwebtoken";
 import config from "config";
 import { statusCodes, makeResponse, responseMessages } from '../../helpers/index.js';
 import { findByEmail } from "../../services/index.js";
+import { privateKey } from "../../config/privateKeys.js";
 
 export default async function authUser(req, res, next) {
   //get the token from the header if present
@@ -11,14 +12,14 @@ export default async function authUser(req, res, next) {
   if (!token) return makeResponse(res, statusCodes.AUTH_ERROR, false, responseMessages.UNAUTHORIZED);
 
   try {
-    const decoded = jwt.verify(token, config.get("privateKey"));
+    const decoded = jwt.verify(token, privateKey.SECRET);
     const adminRecord = await findByEmail({ _id: decoded.id });
     if (adminRecord && decoded.role === 'admin') {
         req.adminData = adminRecord;
         next();
     }
     else {
-        return makeResponse(res, statusCodes.FORBIDDEN, false, responseMessages.EN.SUFFICIENT_RIGHTS);
+        return makeResponse(res, statusCodes.FORBIDDEN, false, responseMessages.SUFFICIENT_RIGHTS);
     }
   } catch (error) {
     //if invalid token

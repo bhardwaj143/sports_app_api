@@ -88,6 +88,14 @@ const coachSchema = Schema({
     type: String,
     enum: ['CERTIFIED_COACH', 'INTERNATIONAL_PLAYER', 'NATIONAL_UNIVERSITY_PLAYER', 'STATE_PLAYER']
   },
+  approve_status: {
+    type: String,
+    default: 'PENDING',
+    enum: ['PENDING', 'HOLD', 'APPROVED', 'REJECTED']
+  },
+  approve_note: {
+    type: String
+  },
   password: {
     type: String
   },

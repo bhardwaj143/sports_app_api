@@ -1,6 +1,6 @@
 import Router from 'express';
 import { privateKey } from '../../config/privateKeys.js'
-import { catchAsyncAction, makeResponse, responseMessages, statusCodes } from '../../helpers/index.js';
+import { catchAsyncAction, makeResponse, responseMessages, statusCodes, userMapper } from '../../helpers/index.js';
 import {
     hashPassword,
     findByEmail,
@@ -9,15 +9,26 @@ import {
     sendEmail,
     generateOtp,
     findAdmin,
-    addAdmin
+    addAdmin,
+    findAllCoachUsers,
+    findCoachByIdAdmin,
+    findDeleteCoachAdmin,
+    findAllCoachCount,
+    changeStatus,
+    findCoachById,
+    addSportsCategory,
+    findSportsCategory,
+    findSportsCategoryDetail,
+    updateSportsCategory,
+    findSportsCategoryCount
 } from '../../services/index.js';
 import { validators } from '../../middleware/index.js';
-import  adminAuth  from '../../middleware/auth/admin.js';
+import adminAuth from '../../middleware/auth/admin.js';
 
 //Response messages
-const { LOGIN, OTP_MISMATCH, INVALID_PASSWORD, INVALID, PASSWORD_CHANGED, ADMIN_ADDED, USER_NOTFOUND, RESET_PASSWORD, OTP_FOR_PASSWORD, VERIFY_OTP, EMAIL_NOT_REGISTER, ALREADY_EXIST } = responseMessages;
+const { LOGIN, OTP_MISMATCH, UPDATE_SUCCESS, NO_DATA_FOUND, FETCH, UPDATE_COACH, ADD_SPORTS, DELETE_COACH_SUCCESSFULL, FETCH_OWN_PROFILE, INVALID_PASSWORD, INVALID, FETCH_ALL_COACH, PASSWORD_CHANGED, ADMIN_ADDED, USER_NOTFOUND, RESET_PASSWORD, OTP_FOR_PASSWORD, VERIFY_OTP, EMAIL_NOT_REGISTER, ALREADY_EXIST } = responseMessages;
 //Response Status code
-const { SUCCESS, NOT_FOUND, BAD_REQUEST, RECORD_ALREADY_EXISTS } = statusCodes;
+const { SUCCESS, NOT_FOUND, BAD_REQUEST, RECORD_ALREADY_EXISTS, RECORD_CREATED } = statusCodes;
 
 const router = Router();
 
@@ -134,5 +145,107 @@ router.post('/reset-password', validators('RESET_PASSWORD'), async (req, res) =>
             return makeResponse(res, BAD_REQUEST, false, error.message);
         });
 });
+
+//Coach Users List
+router.get('/coachUsersList', adminAuth, catchAsyncAction(async (req, res) => {
+    let searchingUser = {};
+    let page = 1,
+        limit = 10,
+        skip = 0;
+    if (req.query.page == 0) req.query.page = '';
+    if (req.query.page) page = req.query.page;
+    if (req.query.limit) limit = req.query.limit;
+    skip = (page - 1) * limit;
+    let regx;
+    let searchFilter = req.query;
+
+    if (searchFilter?.search) {
+        regx = new RegExp(searchFilter?.search);
+        searchingUser = {
+            $or: [{ 'fullName': { '$regex': regx, $options: 'i' } }]
+        }
+    };
+
+    let coachRecords = await findAllCoachUsers(skip, limit, searchingUser);
+    let coachCount = await findAllCoachCount(searchingUser);
+    return makeResponse(res, SUCCESS, true, FETCH_ALL_COACH, coachRecords, {
+        current_page: Number(page),
+        total_records: coachCount,
+        total_pages: Math.ceil(coachCount / limit),
+    });
+}));
+
+// Cpoach Details
+router.get('/coachUsersList/:id', adminAuth, catchAsyncAction(async(req, res) => {
+    let coachRecord = await findCoachById({ _id: req.params.id });
+    return makeResponse(res, SUCCESS, true, FETCH, coachRecord);
+}));
+
+router.get('/searchCoach', catchAsyncAction(async (req, res) => {
+    let coach = await findCoachByIdAdmin({ _id: req.query.id });
+    if (!coach) return makeResponse(res, SUCCESS, true, NO_DATA_FOUND);
+    let newCoachMapper = await userMapper(coach);
+    return makeResponse(res, SUCCESS, true, FETCH_OWN_PROFILE, newCoachMapper);
+}));
+
+router.get('/deleteCoach', catchAsyncAction(async (req, res) => {
+    let coach = await findDeleteCoachAdmin({ _id: req.query.id });
+    return makeResponse(res, SUCCESS, true, DELETE_COACH_SUCCESSFULL);
+}));
+
+//update Coach fields
+router.put('/updateCoachStatus/:id', validators('UPDATE_STATUS'), catchAsyncAction(async (req, res) => {
+    await changeStatus(req.params.id, req.body);
+    return makeResponse(res, SUCCESS, true, UPDATE_COACH);
+}));
+
+// Add Sports Category
+router.post('/sports-category', adminAuth, validators('ADD_SPORTS_CATEGORY'), catchAsyncAction(async (req, res) => {
+    let newSportsCategory = await addSportsCategory(req.body);
+    return makeResponse(res, RECORD_CREATED, true, ADD_SPORTS, newSportsCategory);
+}));
+
+// Sports Category Records
+router.get('/sports-category', adminAuth, catchAsyncAction(async (req, res) => {
+    let searchingCategory = {
+        isDeleted: false
+    };
+    let page = 1,
+        limit = 10,
+        skip = 0;
+    if (req.query.page == 0) req.query.page = '';
+    if (req.query.page) page = req.query.page;
+    if (req.query.limit) limit = req.query.limit;
+    skip = (page - 1) * limit;
+    let regx;
+    let searchFilter = req.query;
+
+    if (searchFilter?.search) {
+        regx = new RegExp(searchFilter?.search);
+        searchingCategory = {
+            $or: [{ 'name': { '$regex': regx, $options: 'i' } }]
+        }
+    };
+
+    let sportsCategoryRecords = await findSportsCategory(skip, limit, searchingCategory);
+    let sportsCategoryCount = await findSportsCategoryCount(searchingCategory);
+    return makeResponse(res, SUCCESS, true, FETCH, sportsCategoryRecords, {
+        current_page: Number(page),
+        total_records: sportsCategoryCount,
+        total_pages: Math.ceil(sportsCategoryCount / limit),
+    });
+}));
+
+// Sports Category Record
+router.get('/sports-category/:id', adminAuth, catchAsyncAction(async (req, res) => {
+    let sportsCategory = await findSportsCategoryDetail({ _id: req.params.id });
+    return makeResponse(res, SUCCESS, true, FETCH, sportsCategory);
+}));
+
+// Update Sports Category Record
+router.patch('/sports-category/:id', adminAuth, catchAsyncAction(async (req, res) => {
+    let sportsCategory = await updateSportsCategory(req.body, { _id: req.params.id });
+    return makeResponse(res, SUCCESS, true, UPDATE_SUCCESS, sportsCategory);
+}));
 
 export const adminController = router;

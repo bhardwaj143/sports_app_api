@@ -21,6 +21,30 @@ export const validationSchema = (action) => {
                 newPassword: Joi.string().required()
             }
         }
+        case 'ADD_OR_UPDATE_AVAILABILITY': {
+            return {
+                days: Joi.array().required(),
+                timing: Joi.array().required(),
+                availableForDays: Joi.number().required()
+            }
+        }
+        case 'COACH_LOGIN': {
+            return {
+                mobileNumber: Joi.string().required(),
+                password: Joi.string().required()
+            }
+        }
+        case 'UPDATE_STATUS': {
+            return {
+                approve_status: Joi.string().required(),
+                approve_note: Joi.string().optional()
+            }
+        }
+        case 'ADD_SPORTS_CATEGORY': {
+            return {
+                name: Joi.string().required()
+            }
+        }
     }
     return {};
 };

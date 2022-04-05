@@ -10,7 +10,8 @@ let {
     base_url,
     apiUerName,
     apikey,
-    senderid
+    senderid,
+    SECRET
 } = process.env;
 
 export const privateKey = {
@@ -22,5 +23,6 @@ export const privateKey = {
     'BASE_URL': base_url,
     'USER_NAME': apiUerName,
     'API_KEY': apikey,
-    'SENDER_ID': senderid
+    'SENDER_ID': senderid,
+    'SECRET': SECRET
 };
