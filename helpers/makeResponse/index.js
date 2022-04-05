@@ -1,3 +1,6 @@
+import { generateOtp } from "../../services/index.js";
+const otp = generateOtp();
+
 export const responseMessages = {
     'ACCOUNT_DISABLED': 'Your account is disabled please contact to admin',
     'ALREADY_REGISTER': 'Mobile-Number already registered',
@@ -32,10 +35,26 @@ export const responseMessages = {
     'AVAILABILITY_ADDED': 'Availability added successful',
     'FETCH': 'Fetched Successfully',
     'UPDATE_SUCCESS': 'Updated Successfully',
-    'ADD_SPORTS': 'Sports Category added successful'
+    'ADD_SPORTS': 'Sports Category added successful',
+    'OTP_MISMATCH': 'OTP mismatch',
+    'OTP_SENT': 'OTP sent to your mobile number',
+    'ADD_CATEGORIES': 'Categories Added Successfully',
+    'FETCH_CATEGORIES': 'Fetch Categories Succesfully',
+    'FETCH_ALL_CATEGORIES': 'Fetch Categories Succesfully',
+    'UPDATE_CATEGORIES': 'Update Categories Succesfully',
+    'DELETE_CATEGORIES': 'Delete Categories Succesfully',
+    'NOT_REGISTERED': 'Mobile Number Not Registered',
+    'OTP_FOR_PASSWORD': 'OTP For Password Reset Sent To Your Mobile Number',
+    'RESET_PASSWORD': 'Password Reset Successfully',
+
 }
 
 export const notificationPayload = {}
+
+export const OTP_Message = {
+ 'OTP': otp,
+ 'OTP_MESSAGE' : `Dear User OTP for Login into Your account is ${otp}-SafeWash DryCleaners`
+}
 
 export const statusCodes = {
     'SUCCESS': 200,

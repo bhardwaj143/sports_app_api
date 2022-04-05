@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import config from "config";
 import { makeResponse, statusCodes, responseMessages } from "../../helpers/index.js";
-import { findCoachById, findUserDetail } from "../../services/index.js";
+import { findCoachById } from "../../services/index.js";
 
 const { UNAUTHORIZED } = responseMessages;
 const { FORBIDDEN, AUTH_ERROR } = statusCodes;
