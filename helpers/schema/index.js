@@ -5,8 +5,7 @@ export const validationSchema = (action) => {
     switch (action) {
         case 'ADD_COACH': {
             return {
-                mobileNumber: Joi.string().required(),
-                password: Joi.string().required()
+                mobileNumber: Joi.string().required()
             };
         }
         case 'LOGIN': {
