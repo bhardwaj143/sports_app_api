@@ -15,7 +15,7 @@ const { ALREADY_REGISTER, COACH_NOTFOUND, UPDATE_COACH, INVALID, REGISTERD, LOGI
 const router = Router();
 
 // Coach Pricing
-router.post('/',  catchAsyncAction(async (req, res) => {
+router.post('/', coachAuth, catchAsyncAction(async (req, res) => {
   // {
   //   "coachId" : "623f630a1807d727ab92e4cd",
   //   "pricingDetail" : [{ "days": "3", "price": [1000, 2000 , 3000] }, { "days": "5", "price": [1000, 2000 , 3000] }, { "days": "2", "price": [1000, 2000 , 3000] }]
@@ -26,7 +26,7 @@ router.post('/',  catchAsyncAction(async (req, res) => {
   }));
 
   // Coach Pricing Get
-router.get('/details/:id',  catchAsyncAction(async (req, res) => {
+router.get('/details/:id', coachAuth, catchAsyncAction(async (req, res) => {
     let pricingDetails = await findCoachPricingDetail({ coachId: req.params.id });
     return makeResponse(res, SUCCESS, true, FETCH_ALL_CATEGORIES, pricingDetails);
   }));
