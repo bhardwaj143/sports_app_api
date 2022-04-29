@@ -134,7 +134,7 @@ router.get('/me', coachAuth, catchAsyncAction(async (req, res) => {
 }));
 
 //Verify OTP
-router.post('/verify-otp', catchAsyncAction(async (req, res) => {
+router.post('/verify-otp', coachAuth, catchAsyncAction(async (req, res) => {
   let coach = await findCoachById({ mobileNumber: req.body.mobileNumber });
   if (!coach) return makeResponse(res, NOT_FOUND, false, NOT_REGISTERED);
   //Genrate access token and Refresh token
@@ -147,7 +147,7 @@ router.post('/verify-otp', catchAsyncAction(async (req, res) => {
 }));
 
 //Resend OTP
-router.post('/resend-otp', catchAsyncAction(async (req, res) => {
+router.post('/resend-otp', coachAuth,  catchAsyncAction(async (req, res) => {
   let coach = await findCoachById({ _id: req.userData.id });
   //Sent OTP
   let otp = await sendOtp(coach.mobileNumber, OTP_Message.OTP_MESSAGE);
