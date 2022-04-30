@@ -6,6 +6,7 @@ export const responseMessages = {
     'ALREADY_REGISTER': 'Mobile-Number already registered',
     'ALREADY_REGISTER_PASSWORD_RESET': 'Mobile-Number already registered pasword is not set',
     'UPDATE_COACH': 'Coach Updated Successfully',
+    'UPDATE_COACH_PRICING': 'Coach Pricing Updated Successfully',
     'COACH_NOTFOUND': 'Coach not found',
     'ALREADY_EXIST': 'Aleardy Exist Please Login',
     'REGISTERD': 'Registered Successfully',

@@ -12,7 +12,6 @@ const pricingSchema = mongoose.Schema({
     },
     coachId: {
         type: mongoose.Schema.ObjectId,
-        required: true,
         ref: 'Coach'
     },
 }, {
