@@ -13,7 +13,7 @@ const pricingSchema = mongoose.Schema({
     coachId: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'Coach'
     },
 }, {
     timestamps: true
