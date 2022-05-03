@@ -17,7 +17,7 @@ const router = Router();
 router.post('/sign-up', validators('ADD_COACH'), catchAsyncAction(async (req, res) => {
   let sent_OTP = OTP_Message.OTP;
   let findcoach = await findCoachDetail({ mobileNumber: req.body.mobileNumber });
-  if (!findcoach.password){
+  if (!findcoach?.password){
     let otp = await sendOtp(req.body.mobileNumber, OTP_Message.OTP_MESSAGE);
   }
   let coach
@@ -32,13 +32,13 @@ router.post('/sign-up', validators('ADD_COACH'), catchAsyncAction(async (req, re
   const refreshToken = coach.generateRefershToken(coach._id);
   // Mapping for removing password
   let newCoachMapper = await userMapper(coach);
-  if (findcoach && !findcoach.password) return makeResponse(res, RECORD_CREATED, true, ALREADY_REGISTER_PASSWORD_RESET,  newCoachMapper, { accessToken, refreshToken });
+  if (findcoach && !findcoach?.password) return makeResponse(res, RECORD_CREATED, true, ALREADY_REGISTER_PASSWORD_RESET,  newCoachMapper, { accessToken, refreshToken });
   if (findcoach) return makeResponse(res, RECORD_ALREADY_EXISTS, false, ALREADY_REGISTER);
   return makeResponse(res, SUCCESS, true, REGISTERD, newCoachMapper, { accessToken, refreshToken });
 }));
 
 //update Coach fields
-router.patch('/', upload.fields([{
+router.patch('/profile', upload.fields([{
   name: 'profile_pic',
   maxCount: 1
 }, {

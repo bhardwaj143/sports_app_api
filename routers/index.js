@@ -1,5 +1,5 @@
 import Router from 'express';
-import { adminController, availabilityController, coachController, pricingController, sportsCategoryController } from '../controllers/index.js'
+import { adminController, availabilityController, coachController, pricingController, sportsCategoryController, studentController } from '../controllers/index.js'
 
 const router = Router();
 
@@ -8,5 +8,8 @@ router.use('/coach', coachController);
 router.use('/availability', availabilityController);
 router.use('/sports-category', sportsCategoryController);
 router.use('/pricing', pricingController);
+router.use('/student', studentController);
+
+
 
 export { router };

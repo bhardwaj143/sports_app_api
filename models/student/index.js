@@ -27,11 +27,16 @@ const studentSchema = Schema({
   mobileNumber: {
     type: String,
   },
+  password: {
+    type: String,
+    required: true
+  },
   gender: {
     type: String,
   },
   email: {
     type: String,
+    required: true
   },
   studentProfil_pic: {
     type: String,
@@ -78,4 +83,4 @@ studentSchema.methods.comparePassword = function (raw, encrypted) {
   });
 };
 
-export const Stundent = model('Student', studentSchema);
+export const Student = model('Student', studentSchema);

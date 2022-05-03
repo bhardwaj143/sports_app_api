@@ -44,6 +44,18 @@ export const validationSchema = (action) => {
                 name: Joi.string().required()
             }
         }
+        // case 'STUDENT_REGISTER' : {
+        //     return {
+        //         email: Joi.string().email().required(),
+        //         password: Joi.string().required()
+        //     }
+        // }
+        case 'STUDENT_LOGIN' : {
+            return {
+                email: Joi.string().email().required(),
+                password: Joi.string().required()
+            }
+        }
     }
     return {};
 };
