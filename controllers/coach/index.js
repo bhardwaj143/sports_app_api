@@ -104,7 +104,8 @@ router.post('/login', validators('COACH_LOGIN'), catchAsyncAction(async (req, re
   if (!passwordCorrect) return makeResponse(res, BAD_REQUEST, false, INVALID);
   const accessToken = coach.generateAuthToken(coach._id);
   const refreshToken = coach.generateRefershToken(coach._id);
-  return makeResponse(res, SUCCESS, true, LOGIN, { accessToken, refreshToken });
+  let coachRecord = await userMapper(coach);
+  return makeResponse(res, SUCCESS, true, LOGIN, { accessToken, refreshToken, coachRecord });
 }));
 
 //Change Password
