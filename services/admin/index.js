@@ -1,4 +1,4 @@
-import { Admin, Coach, User } from '../../models/index.js';
+import { Admin, Coach } from '../../models/index.js';
 
 //Add admin
 export const addAdmin = async (payload = {}) => {

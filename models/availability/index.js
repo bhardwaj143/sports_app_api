@@ -22,6 +22,18 @@ const timeSchema = mongoose.Schema({
     }
 }, { timestamps: false, _id: false });
 
+const notavailablefortimeSchema = mongoose.Schema({
+    time: {
+        type: String,
+    },
+    type: {
+        type: String,
+    },
+    date: {
+        type: String,
+    }
+}, { timestamps: false, _id: false });
+
 const availabilitySchema = mongoose.Schema({
     days: {
         type: [String],
@@ -30,6 +42,9 @@ const availabilitySchema = mongoose.Schema({
     timing: {
         type: [timeSchema],
         required: true
+    },
+    notAvailableForDays: {
+        type: [notavailablefortimeSchema]
     },
     coachId: {
         type: mongoose.Schema.ObjectId,
