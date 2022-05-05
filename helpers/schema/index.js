@@ -5,8 +5,7 @@ export const validationSchema = (action) => {
     switch (action) {
         case 'ADD_COACH': {
             return {
-                mobileNumber: Joi.string().required(),
-                password: Joi.string().required()
+                mobileNumber: Joi.string().required()
             };
         }
         case 'LOGIN': {
@@ -43,6 +42,18 @@ export const validationSchema = (action) => {
         case 'ADD_SPORTS_CATEGORY': {
             return {
                 name: Joi.string().required()
+            }
+        }
+        // case 'STUDENT_REGISTER' : {
+        //     return {
+        //         email: Joi.string().email().required(),
+        //         password: Joi.string().required()
+        //     }
+        // }
+        case 'STUDENT_LOGIN' : {
+            return {
+                email: Joi.string().email().required(),
+                password: Joi.string().required()
             }
         }
     }

@@ -49,7 +49,7 @@ const availabilitySchema = mongoose.Schema({
     coachId: {
         type: mongoose.Schema.ObjectId,
         required: true,
-        ref: 'User'
+        ref: 'Coach'
     },
     availableForDays: {
         type: Number,

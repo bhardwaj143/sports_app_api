@@ -6,10 +6,10 @@ import { hashPassword, addCoach, findCoachDetail, findCoachById, updateCoach, ma
 import mongoose from "mongoose";
 
 //Response Status code
-const { SUCCESS, RECORD_ALREADY_EXISTS, NOT_FOUND, BAD_REQUEST } = statusCodes;
+const { SUCCESS, RECORD_ALREADY_EXISTS, NOT_FOUND, BAD_REQUEST, RECORD_CREATED } = statusCodes;
 
 //Response Messages
-const { ALREADY_REGISTER, COACH_NOTFOUND, UPDATE_COACH, INVALID, REGISTERD, LOGIN, INVALID_PASSWORD, PASSWORD_CHANGED, FETCH_OWN_PROFILE, VERIFY_OTP, OTP_MISMATCH, OTP_SENT, FETCH_ALL_CATEGORIES, NOT_REGISTERED, OTP_FOR_PASSWORD, RESET_PASSWORD } = responseMessages;
+const { ALREADY_REGISTER,ALREADY_REGISTER_PASSWORD_RESET, COACH_NOTFOUND, UPDATE_COACH, INVALID, REGISTERD, LOGIN, INVALID_PASSWORD, PASSWORD_CHANGED, FETCH_OWN_PROFILE, VERIFY_OTP, OTP_MISMATCH, OTP_SENT, FETCH_ALL_CATEGORIES, NOT_REGISTERED, OTP_FOR_PASSWORD, RESET_PASSWORD } = responseMessages;
 
 const router = Router();
 
@@ -17,21 +17,28 @@ const router = Router();
 router.post('/sign-up', validators('ADD_COACH'), catchAsyncAction(async (req, res) => {
   let sent_OTP = OTP_Message.OTP;
   let findcoach = await findCoachDetail({ mobileNumber: req.body.mobileNumber });
-  if (findcoach) return makeResponse(res, RECORD_ALREADY_EXISTS, false, ALREADY_REGISTER);
-  let otp = await sendOtp(req.body.mobileNumber, OTP_Message.OTP_MESSAGE);
-  //set incrept password
-  let password = await hashPassword(req.body.password);
-  let coach = await addCoach({ mobileNumber: req.body.mobileNumber, password, otp: sent_OTP });
+  if (!findcoach?.password){
+    let otp = await sendOtp(req.body.mobileNumber, OTP_Message.OTP_MESSAGE);
+  }
+  let coach
+  if(!findcoach?._id){
+      coach = await addCoach({ mobileNumber: req.body.mobileNumber, otp: sent_OTP });
+  }
+  else{
+    coach = await updateCoach({ mobileNumber: req.body.mobileNumber, otp: sent_OTP }, { _id: findcoach._id });
+  }
   //Genrate access token and Refresh token
   let accessToken = coach.generateAuthToken(coach._id);
   const refreshToken = coach.generateRefershToken(coach._id);
   // Mapping for removing password
   let newCoachMapper = await userMapper(coach);
+  if (findcoach && !findcoach?.password) return makeResponse(res, RECORD_CREATED, true, ALREADY_REGISTER_PASSWORD_RESET,  newCoachMapper, { accessToken, refreshToken });
+  if (findcoach) return makeResponse(res, RECORD_ALREADY_EXISTS, false, ALREADY_REGISTER);
   return makeResponse(res, SUCCESS, true, REGISTERD, newCoachMapper, { accessToken, refreshToken });
 }));
 
 //update Coach fields
-router.patch('/', upload.fields([{
+router.patch('/profile', upload.fields([{
   name: 'profile_pic',
   maxCount: 1
 }, {
@@ -97,7 +104,8 @@ router.post('/login', validators('COACH_LOGIN'), catchAsyncAction(async (req, re
   if (!passwordCorrect) return makeResponse(res, BAD_REQUEST, false, INVALID);
   const accessToken = coach.generateAuthToken(coach._id);
   const refreshToken = coach.generateRefershToken(coach._id);
-  return makeResponse(res, SUCCESS, true, LOGIN, { accessToken, refreshToken });
+  let coachRecord = await userMapper(coach);
+  return makeResponse(res, SUCCESS, true, LOGIN, { accessToken, refreshToken, coachRecord });
 }));
 
 //Change Password
@@ -149,7 +157,7 @@ router.post('/verify-otp', catchAsyncAction(async (req, res) => {
 }));
 
 //Resend OTP
-router.post('/resend-otp', catchAsyncAction(async (req, res) => {
+router.post('/resend-otp', coachAuth,  catchAsyncAction(async (req, res) => {
   let coach = await findCoachById({ _id: req.userData.id });
   //Sent OTP
   let otp = await sendOtp(coach.mobileNumber, OTP_Message.OTP_MESSAGE);
