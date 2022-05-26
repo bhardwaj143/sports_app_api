@@ -65,9 +65,11 @@ router.post(
       coachId: coach._id,
       pricingDetail: req.body.pricingDetail,
     };
-    var query = { coachId: coach._id },
-      options = { upsert: true, new: true, setDefaultsOnInsert: true };
-    Pricing.findOneAndUpdate(query, payload, options, function (error, result) {
+    // let payload = {
+    //   "pricingDetail" : [{ "days": "3", "price": [120, 2000 , 3000] ,"startDate" : "12-10-2022", "endDate": "12-10-2022" }, { "days": "5", "price": [1000, 2000 , 3000], "startDate" : "12-10-2022", "endDate": "12-10-2022" }, { "days": "2", "price": [1000, 2000 , 3000], "startDate" : "12-10-2022", "endDate": "12-10-2022" }]
+    //   }
+    var query = { coachId: coach._id }
+    Pricing.findOneAndUpdate(query, { $set: payload }, { new: true },function (error, result) {
       if (error) return;
       return makeResponse(res, SUCCESS, true, UPDATE_COACH_PRICING, result);
     });

@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 
 const pricingDetailSchema = mongoose.Schema({
-    days: { type: String, default: 0 },
-    price: { type: Array, default: 0 },
+    days: { type: String, required: true},
+    price: { type: Array, required: true },
+    startDate : {type: Date, required: true},
+    endDate :{type: Date,  required: true},
 }, { timestamps: false, _id: false });
 
 const pricingSchema = mongoose.Schema({
